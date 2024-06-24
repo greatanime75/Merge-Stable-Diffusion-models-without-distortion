@@ -24,7 +24,7 @@ parser.add_argument("--safetensors", action='store_true', help="Save as safetens
 parser.add_argument("--ckpt", dest="safetensors", action='store_false', help="Save as ckpt", required=False)
 parser.add_argument("--prune", help="Pruning before merge", action='store_true', default=False, required=False)
 parser.add_argument("--fixclip", help="Force to fix clip to int64", action='store_true', default=False, required=False)
-parser.set_defaults(usefp16=True)
+# parser.set_defaults(usefp16=True)
 args = parser.parse_args()   
 device = args.device
 usefp16 = args.usefp16 
