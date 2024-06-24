@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def get_permuted_param(ps: PermutationSpec, perm, k: str, params, except_axis=None):
   """Get parameter `k` from `params`, with the permutations applied."""
-  w = params[k]
+  w = params[k].to("cuda")
   # Printing on screen will make the process very slow. Don't leave it on in final version
   #print(k)
   
@@ -20,7 +20,7 @@ def get_permuted_param(ps: PermutationSpec, perm, k: str, params, except_axis=No
 
     # None indicates that there is no permutation relevant to that axis.
     if p is not None:
-      w = torch.index_select(w, axis, perm[p].int())
+      w = torch.index_select(w, axis, perm[p].to("cuda").int())
 
   return w
 
@@ -87,11 +87,11 @@ def weight_matching(ps: PermutationSpec, params_a, params_b, special_layers=None
     for _ in tqdm(range(max_iter), desc="weight_matching in fp32", position=1):
       progress = False
       random.shuffle(special_layers)
-      for p_ix in tqdm(special_layers, desc="weight_matching for special_layers", position=2):
+      for p_ix in tqdm(special_layers, desc="weight_matching for special_layers", position=2,miniters=100,maxinterval=1000):
         p = p_ix
         if p in special_layers:
           n = perm_sizes[p]
-          A = torch.zeros((n, n), dtype=torch.float32).to(device="cpu")
+          A = torch.zeros((n, n), dtype=torch.float32).to("cpu")
           for wk, axis in ps.perm_to_axes[p]:
             w_a = params_a[wk]
             w_b = get_permuted_param(ps, perm, wk, params_b, except_axis=axis)
