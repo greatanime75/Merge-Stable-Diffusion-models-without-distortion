@@ -57,8 +57,8 @@ def detect_model_type(model):
 if args.model_a is None or args.model_b is None:
     parser.print_help()
     exit(-1)
-model_a = load_model(Path(args.model_a), device)
-model_b = load_model(Path(args.model_b), device)
+model_a = load_file(Path(args.model_a), device=device)
+model_b = load_file(Path(args.model_b), device=device)
 
 if args.prune:
     model_a = prune(model_a)
@@ -153,7 +153,7 @@ for x in tqdm(range(iterations), desc="Main loop", position=0):
 position_id_key = 'cond_stage_model.transformer.text_model.embeddings.position_ids'
 if position_id_key in theta_0:
     correct = torch.tensor([list(range(77))], dtype=torch.int64, device="cpu")
-    current = theta_0[position_id_key].to(torch.int64)
+    current = theta_0[position_id_key].to(torch.int64).to('cpu')
     broken = correct.ne(current)
     broken = [i for i in range(77) if broken[0][i]]
     if len(broken) != 0:
