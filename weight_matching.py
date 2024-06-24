@@ -45,7 +45,7 @@ def weight_matching(ps: PermutationSpec, params_a, params_b, special_layers=None
     for _ in tqdm(range(max_iter), desc="weight_matching in fp16", position=1):
       progress = False
       random.shuffle(special_layers)
-      for p_ix in tqdm(special_layers, desc="weight_matching for special_layers", position=2):
+      for p_ix in tqdm(special_layers, desc="weight_matching for special_layers", position=2,miniters=100,maxinterval=1000):
         p = p_ix
         if p in special_layers:
           n = perm_sizes[p]
